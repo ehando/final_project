@@ -5,7 +5,7 @@ We will analyze the hotels_motels data from data.gov for this project. In order 
  
 
 
-## Authors
+## Contributors
 
 - Eirik Andersen
 - Stuti Shrestha
