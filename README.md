@@ -5,7 +5,7 @@ We will analyze the hotels_motels data from data.gov for this project. In order 
  
 
 
-## Contributors
+## Contributors 📝
 
 - Eirik Andersen
 - Stuti Shrestha
@@ -14,7 +14,7 @@ We will analyze the hotels_motels data from data.gov for this project. In order 
 
 
 
-## Library
+## Library 📚
     1.  tidyverse
     2.  lubridate
     3.  ggplot2
@@ -26,18 +26,18 @@ We will analyze the hotels_motels data from data.gov for this project. In order 
     9.  rsconnect
 
 
-## Analysis Code
+## Analysis Code 🧐
 
 
 
-## Shinny Code
+## Shiny Code ✨
 
     
-## Geo Spatial leaflet
+## Geo Spatial leaflet 📍
 
-## Prediction ride model
+## Prediction ride model 🔮
        
-## Links
+## Links 🖇️
 
 [github](https://github.com/ehando/final_project)
 
