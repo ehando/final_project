@@ -76,11 +76,17 @@ server <- function(input, output) {
   # Business Start Date
   output$start_date <- renderPlot({
     start_date <- df %>%
-      group_by(BusinessStartDate) %>%
-      summarise(count = n())
+      mutate(Year = lubridate::year(BusinessStartDate)) %>%
+      group_by(Year, BusinessType) %>%
+      summarise(count = n()) %>%
+      arrange(Year, BusinessType) %>%
+      group_by(BusinessType) %>%
+      mutate(cumulative_count = cumsum(count))
     
-    ggplot(start_date, aes(x = BusinessStartDate, y = Count)) +
-      geom_line(stat = "count") +
+    ggplot(start_date, aes(x = Year, y = cumulative_count,
+                           color = BusinessType,group = BusinessType)) +
+      geom_line(linewidth = 1.1) +
+      scale_color_viridis(discrete = TRUE, option = "H") +
       labs(x = "Business Start Date", y = "Count") +
       ggtitle("Trend of New Business Start Dates")
   })
