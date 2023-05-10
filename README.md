@@ -23,7 +23,7 @@ We will analyze the hotels_motels data from data.gov for this project. In order 
     6.  leaflet
     7.  viridis
     8.  shiny
-    9. rsconnect
+    9.  rsconnect
 
 
 ## Analysis Code
