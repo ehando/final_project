@@ -9,9 +9,10 @@ rm(list = ls())
 
 #setwd("C:/Users/Eirik/OneDrive/College/Senior/Data 332/final_project")
 
+
 # read csv file
 df <- read.csv("data/hotels_motels.csv") %>%
-  separate(the_geom, into = c("type", "longitude", "latitude"), sep = " ")
+  separate(the_geom, into = c(NA, "longitude", "latitude"), sep = " ")
 
 # remove parentheses from latitude and longitude columns
 df$latitude <- gsub("\\(|\\)", "", df$latitude)
@@ -21,17 +22,39 @@ df$longitude <- gsub("\\(|\\)", "", df$longitude)
 df$latitude <- as.numeric(df$latitude)
 df$longitude <- as.numeric(df$longitude)  
 
+
 # Define the UI
 ui <- fluidPage(
-  leafletOutput("map"),
-  plotOutput("barplot")
-)
+  titlePanel("Stays in New Orleans"),
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Introduction",
+                 textOutput("intro_text")),
+        tabPanel("Map of Hotels, Motels, and Rentals",
+                fluidRow(
+                  column(12, leafletOutput("map"))
+                  )),
+        tabPanel("Count by Business Type",
+                 fluidRow(
+                   column(12, plotOutput("busn_type_plot"))
+                 )),
+        tabPanel("Business Start Date",
+                 fluidRow(
+                   column(12, plotOutput("start_date"))
+                 ))
+        
+      )))
 
 # Define the server
 server <- function(input, output) {
   
-  # Render the bar chart
-  output$barplot <- renderPlot({
+  #Intro paragraph explaining project
+  output$intro_text <-renderText({
+    "Explanation of our project"
+  })
+  
+  # Count by busn type
+  output$busn_type_plot <- renderPlot({
     # pivot showing count of each busn type
     busn_type <- df %>%
       group_by(BusinessType) %>%
@@ -43,12 +66,25 @@ server <- function(input, output) {
       labs(x = "Business Type", y = "Count", title = "Business Type Counts")
   })
   
-  # Render the map
+  # Map of Places
   output$map <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
       addMarkers(data = df, lat = ~latitude, lng = ~longitude)
   })
+  
+  # Business Start Date
+  output$start_date <- renderPlot({
+    start_date <- df %>%
+      group_by(BusinessStartDate) %>%
+      summarise(count = n())
+    
+    ggplot(start_date, aes(x = BusinessStartDate, y = Count)) +
+      geom_line(stat = "count") +
+      labs(x = "Business Start Date", y = "Count") +
+      ggtitle("Trend of New Business Start Dates")
+  })
 }
 
 shinyApp(ui, server)
+
