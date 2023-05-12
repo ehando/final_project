@@ -1,4 +1,5 @@
 library(tidyverse)
+library(tidytext)
 library(dplyr)
 library(lubridate)
 library(ggplot2)
@@ -41,8 +42,11 @@ ui <- fluidPage(
         tabPanel("Business Start Date",
                  fluidRow(
                    column(12, plotOutput("start_date"))
+                 )),
+        tabPanel("Major Players in the Business",
+                 fluidRow(
+                   column(12, plotOutput("major_players"))
                  ))
-        
       )))
 
 # Define the server
@@ -84,12 +88,28 @@ server <- function(input, output) {
       mutate(cumulative_count = cumsum(count))
     
     ggplot(start_date, aes(x = Year, y = cumulative_count,
-                           color = BusinessType,group = BusinessType)) +
+                           color = BusinessType, group = BusinessType)) +
       geom_line(linewidth = 1.1) +
       scale_color_viridis(discrete = TRUE, option = "H") +
       labs(x = "Business Start Date", y = "Count") +
       ggtitle("Trend of New Business Start Dates")
   })
+  
+  # The Major Players in NOLA
+  output$major_players <- renderPlot({
+    word_counts <- df %>%
+      unnest_tokens(word, BusinessName) %>%
+      count(word) %>%
+      arrange(desc(n))
+    
+    string_values <- c('sonder', 'marriott', 'hilton', 'holiday', 'hyatt')
+    majors <- subset(word_counts, word %in% string_values)
+
+    ggplot(majors, aes(x = word, y = n)) +
+      geom_bar(stat = "identity")  
+  })
+  
+  
 }
 
 shinyApp(ui, server)
