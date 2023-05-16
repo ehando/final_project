@@ -51,7 +51,8 @@ ui <- fluidPage(
                  )),
         tabPanel("LLM Prediction Model",
                  fluidRow(
-                   column(12, textOutput("llm_model"))
+                   column(12, textOutput("llm_model")),
+                   column(12, textOutput("llm_citation"))
                  )),
         tabPanel("Our Prediction Model",
                  fluidRow(
@@ -67,31 +68,11 @@ ui <- fluidPage(
       )))
 
 # Define the server
-# Define the server
 server <- function(input, output) {
   
   #Intro paragraph explaining project
-  #Intro paragraph explaining project
   output$intro_text <-renderText({
-    "
-    
-    
-   
-   We found the data on data.gov. It contains information on hotels and motels in the LA neighborhood of New Orleans. 
-   We created a shiny app to begin the analysis. 
-   We divided latitude and longitude, which made it easier for us to locate various places on the map. 
-   To determine the number of hotels and motels operating there, we then counted different company categories and created a bar graph. 
-   We used a company start date and kept track of how many companies launched over the course of a decade in order to conduct further analyses. 
-   To determine the terms that were utilized in the business type, we used emotional analysis. 
-   The most repeated words were then counted once we had separated the words. 
-   When we examine the top 5 companies in the Major Player in the Business graph, 
-   we can see that Sonder is the largest chain when compared to the others. Additionally, 
-   we developed a prediction model based on latitude and longitude that requests the user's input in order 
-   to inform them of the location of each organization.
-   
-
-
-"
+    "Explanation of our project"
   })
   
   # Count by busn type
@@ -181,13 +162,14 @@ server <- function(input, output) {
     lat <- predictions_latitude[1]
     lng <- predictions_longitude[1]
     
-    # Predicted location of next business
-    print(lat)
-    print(lng)
+    # Create a string with the values of lat and lng
+    result <- paste("Latitude: ", lat, "\nLongitude: ", lng)
+    
+    # Return the result as the output text
+    return(result)
+  })
+  output$llm_citation <- renderText({
     '
-    # Location is 611 Bourbon St, New Orleans, LA 70130, United States
-    
-    
     # APA Citation from Bing AI
     "Built In. (n.d.). Regression Trees: How to Get Started. Built In.
     https://builtin.com/data-science/regression-tree"
