@@ -67,11 +67,31 @@ ui <- fluidPage(
       )))
 
 # Define the server
+# Define the server
 server <- function(input, output) {
   
   #Intro paragraph explaining project
+  #Intro paragraph explaining project
   output$intro_text <-renderText({
-    "Explanation of our project"
+    "
+    
+    
+   
+   We found the data on data.gov. It contains information on hotels and motels in the LA neighborhood of New Orleans. 
+   We created a shiny app to begin the analysis. 
+   We divided latitude and longitude, which made it easier for us to locate various places on the map. 
+   To determine the number of hotels and motels operating there, we then counted different company categories and created a bar graph. 
+   We used a company start date and kept track of how many companies launched over the course of a decade in order to conduct further analyses. 
+   To determine the terms that were utilized in the business type, we used emotional analysis. 
+   The most repeated words were then counted once we had separated the words. 
+   When we examine the top 5 companies in the Major Player in the Business graph, 
+   we can see that Sonder is the largest chain when compared to the others. Additionally, 
+   we developed a prediction model based on latitude and longitude that requests the user's input in order 
+   to inform them of the location of each organization.
+   
+
+
+"
   })
   
   # Count by busn type
