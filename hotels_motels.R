@@ -233,22 +233,20 @@ server <- function(input, output) {
   })
   output$llm_citation <- renderText({
     '
-    APA Citation from Bing AI
-    "Built In. (n.d.). Regression Trees: How to Get Started. Built In.
-    https://builtin.com/data-science/regression-tree"\n
-    
-    "Carnegie Mellon University. (n.d.). Lecture 10: Regression Trees.
-    Carnegie Mellon University. https://www.stat.cmu.edu/~cshalizi/350-2006/lecture-10.pdf"
-    
-    Explanation
-    "Regression trees are a variant of decision trees that aim to
-    predict outcomes we consider real numbers — such as the optimal prescription
-    dosage, the cost of gas next year or the number of expected Covid cases this
-    winter. Regression trees divide the data into subsets, that is, branches,
-    nodes, and leaves. Like decision trees, regression trees select splits that
-    decrease the dispersion of target attribute values. Thus, the target attribute
-    values can be predicted from their mean values in the leaves."
-    '
+  APA Citation from Bing AI
+  "Built In. (n.d.). Regression Trees: How to Get Started. Built In.
+  https://builtin.com/data-science/regression-tree"
+  "Carnegie Mellon University. (n.d.). Lecture 10: Regression Trees.
+  Carnegie Mellon University. https://www.stat.cmu.edu/~cshalizi/350-2006/lecture-10.pdf"
+  Explanation
+  "Regression trees are a variant of decision trees that aim to
+  predict outcomes we consider real numbers — such as the optimal prescription
+  dosage, the cost of gas next year or the number of expected Covid cases this
+  winter. Regression trees divide the data into subsets, that is, branches,
+  nodes, and leaves. Like decision trees, regression trees select splits that
+  decrease the dispersion of target attribute values. Thus, the target attribute
+  values can be predicted from their mean values in the leaves."
+  '
   })
   
   observeEvent(input$predict_button, {
@@ -323,3 +321,4 @@ server <- function(input, output) {
 }
 
 shinyApp(ui, server)
+

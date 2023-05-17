@@ -5,10 +5,10 @@ account: ehando
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9124955
-bundleId: 7227067
+bundleId: 7227155
 url: https://ehando.shinyapps.io/final_project/
-when: 1684286056.82761
-lastSyncTime: 1684286056.82764
+when: 1684288972.35813
+lastSyncTime: 1684288972.35815
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .gitattributes|.RData|data/.DS_Store|data/vacation_rental.csv|README.md
