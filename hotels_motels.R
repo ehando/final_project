@@ -7,6 +7,7 @@ library(shiny)
 library(leaflet)
 library(caret)
 library(class)
+library(viridis)
 rm(list = ls())
 
 #setwd("C:/Users/Eirik/OneDrive/College/Senior/Data 332/final_project")
@@ -45,11 +46,13 @@ ui <- fluidPage(
                )),
       tabPanel("Business Start Date",
                fluidRow(
-                 column(12, plotOutput("start_date"))
+                 column(12, plotOutput("start_date", width = '800px',
+                                       height = '600px'))
                )),
       tabPanel("Major Players in the Business",
                fluidRow(
-                 column(12, plotOutput("major_players"))
+                 column(12, plotOutput("major_players", width = '800px',
+                                       height = '600px'))
                )),
       tabPanel("Popular zip code",
                fluidRow(
