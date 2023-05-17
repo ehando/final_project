@@ -37,25 +37,30 @@ ui <- fluidPage(
                textOutput("intro_text")),
       tabPanel("Map of Hotels, Motels, and Rentals",
                fluidRow(
+                 column(12, textOutput('map_comment')),
                  column(12, leafletOutput("map"))
                )),
       tabPanel("Count by Business Type",
                fluidRow(
+                 column(12, textOutput('busn_type_comment')),
                  column(12, plotOutput("busn_type_plot", width = '800px',
                                        height = '600px'))
                )),
       tabPanel("Business Start Date",
                fluidRow(
+                 column(12, textOutput('start_date_comment')),
                  column(12, plotOutput("start_date", width = '800px',
                                        height = '600px'))
                )),
       tabPanel("Major Players in the Business",
                fluidRow(
+                 column(12, textOutput('major_players_comment')),
                  column(12, plotOutput("major_players", width = '800px',
                                        height = '600px'))
                )),
       tabPanel("Popular zip code",
                fluidRow(
+                 column(12, textOutput('zip_comment')),
                  column(3,
                         selectInput(
                           "Year_select","Select a year",
@@ -71,6 +76,7 @@ ui <- fluidPage(
                )),
       tabPanel("Our Prediction Model",
                fluidRow(
+                 column(12, textOutput('knn_model_comment')),
                  column(6,textInput("latitude_input", "Latitude:",
                                     placeholder = "Enter latitude...")),
                  column(6, textInput("longitude_input", "Longitude:",
@@ -117,7 +123,8 @@ server <- function(input, output) {
     
     ggplot(busn_type, aes(x = BusinessType, y = count)) +
       geom_bar(stat = "identity",fill="deeppink3",color="black") +
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1,
+                                       size = 10),
             plot.title = element_text(size = 20)) +
       labs(x = "Business Type", y = "Count", title = "Business Type Counts") +
       ggtitle("Business Type Counts")
@@ -160,7 +167,7 @@ server <- function(input, output) {
     majors <- subset(word_counts, word %in% string_values)
     
     ggplot(majors, aes(x = word, y = n)) +
-      geom_bar(stat = "identity",fill= "peachpuff3", color="peachpuff3")  
+      geom_bar(stat = "identity",fill= "peachpuff3", color="peachpuff3")
   })
   
   
@@ -226,14 +233,14 @@ server <- function(input, output) {
   })
   output$llm_citation <- renderText({
     '
-    # APA Citation from Bing AI
+    APA Citation from Bing AI
     "Built In. (n.d.). Regression Trees: How to Get Started. Built In.
-    https://builtin.com/data-science/regression-tree"
+    https://builtin.com/data-science/regression-tree"\n
     
     "Carnegie Mellon University. (n.d.). Lecture 10: Regression Trees.
     Carnegie Mellon University. https://www.stat.cmu.edu/~cshalizi/350-2006/lecture-10.pdf"
     
-    # Explanation
+    Explanation
     "Regression trees are a variant of decision trees that aim to
     predict outcomes we consider real numbers — such as the optimal prescription
     dosage, the cost of gas next year or the number of expected Covid cases this
@@ -290,10 +297,29 @@ server <- function(input, output) {
       })
     }})
   
+  output$map_comment <- renderText({
+    'Insert description'
+  })
   
+  output$busn_type_comment <- renderText({
+    'Insert description'
+  })
+  
+  output$start_date_comment <- renderText({
+    'Insert description'
+  })
+  
+  output$major_players_comment <- renderText({
+    'Insert description'
+  })
+  
+  output$zip_comment <- renderText({
+    'Insert description'
+  })
+  
+  output$knn_model_comment <- renderText({
+    'Insert description'
+  })
 }
 
 shinyApp(ui, server)
-
-
-
