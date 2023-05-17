@@ -25,6 +25,8 @@ df$longitude <- gsub("\\(|\\)", "", df$longitude)
 df$latitude <- as.numeric(df$latitude)
 df$longitude <- as.numeric(df$longitude)  
 
+#Converting this date to year
+df$Year <- str_sub(df$BusinessStartDate,1,4)
 
 # Define the UI
 ui <- fluidPage(
