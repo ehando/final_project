@@ -3,7 +3,6 @@ library(tidytext)
 library(dplyr)
 library(lubridate)
 library(ggplot2)
-library(viridis)
 library(shiny)
 library(leaflet)
 library(caret)
@@ -31,14 +30,6 @@ df$Year <- str_sub(df$BusinessStartDate,1,4)
 # Define the UI
 ui <- fluidPage(
   titlePanel("Stays in New Orleans"),
-  sidebarPanel(
-    selectInput(
-      "Year_select","Select a year",
-      choices = c("2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-                  "2010","2011","2012","2013","2014","2015","2016","2017","2018","2019",
-                  "2020","2021","2022","2023")
-    )
-  ),
     mainPanel(
       tabsetPanel(
         tabPanel("Introduction",
@@ -49,7 +40,8 @@ ui <- fluidPage(
                   )),
         tabPanel("Count by Business Type",
                  fluidRow(
-                   column(12, plotOutput("busn_type_plot"))
+                   column(12, plotOutput("busn_type_plot", width = '800px',
+                                         height = '600px'))
                  )),
         tabPanel("Business Start Date",
                  fluidRow(
@@ -61,7 +53,13 @@ ui <- fluidPage(
                  )),
         tabPanel("Popular zip code",
                  fluidRow(
-                   column(12, plotOutput("zip_data"))
+                   column(3,
+                          selectInput(
+                            "Year_select","Select a year",
+                            choices = c("2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+                                        "2010","2011","2012","2013","2014","2015","2016","2017","2018","2019",
+                                        "2020","2021","2022","2023"))),
+                   column(9, plotOutput("zip_data"))
                  )),
         tabPanel("LLM Prediction Model",
                  fluidRow(
@@ -116,8 +114,11 @@ server <- function(input, output) {
     
     ggplot(busn_type, aes(x = BusinessType, y = count)) +
       geom_bar(stat = "identity") +
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-      labs(x = "Business Type", y = "Count", title = "Business Type Counts")
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+            plot.title = element_text(size = 20)) +
+      labs(x = "Business Type", y = "Count", title = "Business Type Counts") +
+      ggtitle("Business Type Counts")
+    
   })
   
   # Map of Places
