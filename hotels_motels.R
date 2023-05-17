@@ -30,54 +30,54 @@ df$Year <- str_sub(df$BusinessStartDate,1,4)
 # Define the UI
 ui <- fluidPage(
   titlePanel("Stays in New Orleans"),
-    mainPanel(
-      tabsetPanel(
-        tabPanel("Introduction",
-                 textOutput("intro_text")),
-        tabPanel("Map of Hotels, Motels, and Rentals",
-                fluidRow(
-                  column(12, leafletOutput("map"))
-                  )),
-        tabPanel("Count by Business Type",
-                 fluidRow(
-                   column(12, plotOutput("busn_type_plot", width = '800px',
-                                         height = '600px'))
-                 )),
-        tabPanel("Business Start Date",
-                 fluidRow(
-                   column(12, plotOutput("start_date"))
-                 )),
-        tabPanel("Major Players in the Business",
-                 fluidRow(
-                   column(12, plotOutput("major_players"))
-                 )),
-        tabPanel("Popular zip code",
-                 fluidRow(
-                   column(3,
-                          selectInput(
-                            "Year_select","Select a year",
-                            choices = c("2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-                                        "2010","2011","2012","2013","2014","2015","2016","2017","2018","2019",
-                                        "2020","2021","2022","2023"))),
-                   column(9, plotOutput("zip_data"))
-                 )),
-        tabPanel("LLM Prediction Model",
-                 fluidRow(
-                   column(12, textOutput("llm_model")),
-                   column(12, textOutput("llm_citation"))
-                 )),
-        tabPanel("Our Prediction Model",
-                 fluidRow(
-                  column(6,textInput("latitude_input", "Latitude:",
-                                     placeholder = "Enter latitude...")),
-                  column(6, textInput("longitude_input", "Longitude:",
+  mainPanel(
+    tabsetPanel(
+      tabPanel("Introduction",
+               textOutput("intro_text")),
+      tabPanel("Map of Hotels, Motels, and Rentals",
+               fluidRow(
+                 column(12, leafletOutput("map"))
+               )),
+      tabPanel("Count by Business Type",
+               fluidRow(
+                 column(12, plotOutput("busn_type_plot", width = '800px',
+                                       height = '600px'))
+               )),
+      tabPanel("Business Start Date",
+               fluidRow(
+                 column(12, plotOutput("start_date"))
+               )),
+      tabPanel("Major Players in the Business",
+               fluidRow(
+                 column(12, plotOutput("major_players"))
+               )),
+      tabPanel("Popular zip code",
+               fluidRow(
+                 column(3,
+                        selectInput(
+                          "Year_select","Select a year",
+                          choices = c("2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
+                                      "2010","2011","2012","2013","2014","2015","2016","2017","2018","2019",
+                                      "2020","2021","2022","2023"))),
+                 column(9, plotOutput("zip_data"))
+               )),
+      tabPanel("LLM Prediction Model",
+               fluidRow(
+                 column(12, textOutput("llm_model")),
+                 column(12, textOutput("llm_citation"))
+               )),
+      tabPanel("Our Prediction Model",
+               fluidRow(
+                 column(6,textInput("latitude_input", "Latitude:",
+                                    placeholder = "Enter latitude...")),
+                 column(6, textInput("longitude_input", "Longitude:",
                                      placeholder = "Enter longitude..."))),
-                 fluidRow(
-                  column(12, actionButton("predict_button", "Predict"))),
-                 fluidRow(
-                  column(12, verbatimTextOutput("predicted_output"))
-                 ))
-      )))
+               fluidRow(
+                 column(12, actionButton("predict_button", "Predict"))),
+               fluidRow(
+                 column(12, verbatimTextOutput("predicted_output"))
+               ))
+    )))
 
 # Define the server
 server <- function(input, output) {
@@ -113,7 +113,7 @@ server <- function(input, output) {
       summarise(count = n())
     
     ggplot(busn_type, aes(x = BusinessType, y = count)) +
-      geom_bar(stat = "identity") +
+      geom_bar(stat = "identity",fill="deeppink3",color="black") +
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
             plot.title = element_text(size = 20)) +
       labs(x = "Business Type", y = "Count", title = "Business Type Counts") +
@@ -155,9 +155,9 @@ server <- function(input, output) {
     
     string_values <- c('sonder', 'marriott', 'hilton', 'holiday', 'hyatt')
     majors <- subset(word_counts, word %in% string_values)
-
+    
     ggplot(majors, aes(x = word, y = n)) +
-      geom_bar(stat = "identity")  
+      geom_bar(stat = "identity",fill= "peachpuff3", color="peachpuff3")  
   })
   
   
@@ -242,7 +242,7 @@ server <- function(input, output) {
   })
   
   observeEvent(input$predict_button, {
-  
+    
     dataset <- df[, c("latitude", "longitude", "BusinessType")]
     
     # Split the dataset into training and testing sets
@@ -286,9 +286,11 @@ server <- function(input, output) {
         predicted_types
       })
     }})
-
+  
   
 }
 
 shinyApp(ui, server)
+
+
 
