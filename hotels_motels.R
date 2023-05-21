@@ -9,13 +9,9 @@ library(caret)
 library(class)
 library(viridis)
 rm(list = ls())
-
-#setwd("C:/Users/Eirik/OneDrive/College/Senior/Data 332/final_project")
-
-
-# read csv file
-df <- read.csv("data/hotels_motels.csv") %>%
-  separate(the_geom, into = c(NA, "longitude", "latitude"), sep = " ")
+#setwd("~/Desktop/DATA 332")
+df <- read.csv("hotels_motels.csv") %>%
+  separate(the_geom, into = c("type", "longitude", "latitude"), sep = " ")
 
 # remove parentheses from latitude and longitude columns
 df$latitude <- gsub("\\(|\\)", "", df$latitude)
@@ -23,7 +19,27 @@ df$longitude <- gsub("\\(|\\)", "", df$longitude)
 
 # convert latitude and longitude columns to numeric values
 df$latitude <- as.numeric(df$latitude)
-df$longitude <- as.numeric(df$longitude)  
+df$longitude <- as.numeric(df$longitude) 
+
+
+df$street_name <- sapply(str_split(df$BusinessAddress, "\\s"), function(x) {
+  if (length(x) >= 3) {
+    paste(x[2:(length(x) - 1)], collapse = " ")
+  } else {
+    ""
+  }
+})
+
+
+df2 <- df %>%
+  group_by(Zip, BusinessType) %>%
+  summarise(NumBusinessType = n())
+# Load data
+
+#df <- read.csv("hotels_motels.csv") %>%
+# Define UI
+# UI function
+ 
 
 #Converting this date to year
 df$Year <- str_sub(df$BusinessStartDate,1,4)
@@ -85,8 +101,17 @@ ui <- fluidPage(
                  column(12, actionButton("predict_button", "Predict"))),
                fluidRow(
                  column(12, verbatimTextOutput("predicted_output"))
-               ))
-    )))
+                 )),
+      tabPanel("Map of ZIP Codes",
+              fluidRow(
+                column(12, leafletOutput("map2")))),
+      
+      tabPanel("Number of Businesses on Each Street",
+              fluidRow(
+        # Street name selection
+                column(12, selectInput("street_select", "Select Street Name", choices = unique(df$street_name)),
+                column(12, plotOutput("business_graph"))))))
+  ))   
 
 # Define the server
 server <- function(input, output) {
@@ -318,9 +343,80 @@ server <- function(input, output) {
   output$knn_model_comment <- renderText({
     'Insert description'
   })
+
+
+#Mansi
+# ui <- fluidPage(
+#   titlePanel("Map of ZIP Codes"),
+#   
+#   sidebarLayout(
+#     sidebarPanel(
+#       # Place any sidebar inputs here, if needed
+#     ),
+#     
+#     mainPanel(
+#       leafletOutput("map")
+#     )
+#   )
+# )
+
+# Server function
+  output$map2 <- renderLeaflet({
+    leaflet() %>%
+      addTiles() %>%
+      setView(lng = -95.7129, lat = 37.0902, zoom = 4) %>%
+      # Customize the map as desired, e.g., add markers or polygons
+      addMarkers(data = df, lng = ~longitude, lat = ~latitude, popup = ~BusinessType)
+  })
+
+
+# Run the app
+
+
+
+# # UI function
+# ui <- fluidPage(
+#   titlePanel("Number of Businesses on Each Street"),
+#   
+#   sidebarLayout(
+#     sidebarPanel(
+#       # Street name selection
+#       selectInput("street_select", "Select Street Name", choices = unique(df$street_name)),
+#       
+#       # Place any additional sidebar inputs here, if needed
+#     ),
+#     
+#     mainPanel(
+#       plotOutput("business_graph")
+#     )
+#   )
+# )
+
+#Server function
+
+  # df$street_name <- sapply(str_split(df$BusinessAddress, "\\s"), function(x) {
+  #   if (length(x) >= 3) {
+  #     paste(x[2:(length(x) - 1)], collapse = " ")
+  #   } else {
+  #     ""
+  #   }
+  # })
+  output$business_graph <- renderPlot({
+    filtered_data <- subset(df, street_name == input$street_select)
+    
+    street_counts <- filtered_data %>%
+      group_by(street_name) %>%
+      summarise(num_streets = n())
+    
+    ggplot(data = street_counts, aes(x = street_name, y = num_streets)) +
+      geom_bar(stat = "identity", fill = "steelblue") +
+      labs(x = "Street Name", y = "Number of Occurrences") +
+      theme_minimal()
+  })
 }
 
-shinyApp(ui, server)
+shinyApp(ui = ui, server = server)
+
 
 
 
