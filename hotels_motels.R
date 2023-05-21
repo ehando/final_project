@@ -321,77 +321,7 @@ server <- function(input, output) {
 }
 
 shinyApp(ui, server)
-ui <- fluidPage(
-  titlePanel("Map of ZIP Codes"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      # Place any sidebar inputs here, if needed
-    ),
-    
-    mainPanel(
-      leafletOutput("map")
-    )
-  )
-)
 
-# Server function
-server <- function(input, output) {
-  output$map <- renderLeaflet({
-    leaflet() %>%
-      addTiles() %>%
-      setView(lng = -95.7129, lat = 37.0902, zoom = 4) %>%
-      # Customize the map as desired, e.g., add markers or polygons
-      addMarkers(data = df, lng = ~longitude, lat = ~latitude, popup = ~BusinessType)
-  })
-}
-
-# Run the app
-shinyApp(ui = ui, server = server)
-
-
-# UI function
-ui <- fluidPage(
-  titlePanel("Number of Businesses on Each Street"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      # Street name selection
-      selectInput("street_select", "Select Street Name", choices = unique(df$street_name)),
-      
-      # Place any additional sidebar inputs here, if needed
-    ),
-    
-    mainPanel(
-      plotOutput("business_graph")
-    )
-  )
-)
-
-#Server function
-server <- function(input, output) {
-  df$street_name <- sapply(str_split(df$BusinessAddress, "\\s"), function(x) {
-    if (length(x) >= 3) {
-      paste(x[2:(length(x) - 1)], collapse = " ")
-    } else {
-      ""
-    }
-  })
-  output$business_graph <- renderPlot({
-    filtered_data <- subset(df, street_name == input$street_select)
-    
-    street_counts <- filtered_data %>%
-      group_by(street_name) %>%
-      summarise(num_streets = n())
-    
-    ggplot(data = street_counts, aes(x = street_name, y = num_streets)) +
-      geom_bar(stat = "identity", fill = "steelblue") +
-      labs(x = "Street Name", y = "Number of Occurrences") +
-      theme_minimal()
-  })
-}
-
-shinyApp(ui = ui, server = server)
 
 
 
