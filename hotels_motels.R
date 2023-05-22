@@ -9,8 +9,10 @@ library(caret)
 library(class)
 library(viridis)
 rm(list = ls())
-#setwd("~/Desktop/DATA 332")
-df <- read.csv("hotels_motels.csv") %>%
+
+#setwd("C:/Users/Eirik/OneDrive/College/Senior/Data 332/final_project")
+
+df <- read.csv("data/hotels_motels.csv") %>%
   separate(the_geom, into = c("type", "longitude", "latitude"), sep = " ")
 
 # remove parentheses from latitude and longitude columns
@@ -34,12 +36,6 @@ df$street_name <- sapply(str_split(df$BusinessAddress, "\\s"), function(x) {
 df2 <- df %>%
   group_by(Zip, BusinessType) %>%
   summarise(NumBusinessType = n())
-# Load data
-
-#df <- read.csv("hotels_motels.csv") %>%
-# Define UI
-# UI function
- 
 
 #Converting this date to year
 df$Year <- str_sub(df$BusinessStartDate,1,4)
@@ -88,7 +84,7 @@ ui <- fluidPage(
       tabPanel("LLM Prediction Model",
                fluidRow(
                  column(12, textOutput("llm_model")),
-                 column(12, textOutput("llm_citation"))
+                 column(12, verbatimTextOutput("llm_citation"))
                )),
       tabPanel("Our Prediction Model",
                fluidRow(
@@ -103,15 +99,19 @@ ui <- fluidPage(
                  column(12, verbatimTextOutput("predicted_output"))
                  )),
       tabPanel("Map of ZIP Codes",
-              fluidRow(
-                column(12, leafletOutput("map2")))),
-      
+               fluidRow(
+                 column(12, textOutput('map2_comment'))),
+               fluidRow(
+                 column(12, leafletOutput("map2")))),
       tabPanel("Number of Businesses on Each Street",
+               fluidRow(
+                 column(12, textOutput('business_graph_comment')),
               fluidRow(
         # Street name selection
-                column(12, selectInput("street_select", "Select Street Name", choices = unique(df$street_name)),
+                column(12, selectInput("street_select", "Select Street Name",
+                                       choices = unique(df$street_name)),
                 column(12, plotOutput("business_graph"))))))
-  ))   
+  )))   
 
 # Define the server
 server <- function(input, output) {
@@ -257,21 +257,20 @@ server <- function(input, output) {
     return(result)
   })
   output$llm_citation <- renderText({
-    '
-  APA Citation from Bing AI
-  "Built In. (n.d.). Regression Trees: How to Get Started. Built In.
-  https://builtin.com/data-science/regression-tree"
-  "Carnegie Mellon University. (n.d.). Lecture 10: Regression Trees.
-  Carnegie Mellon University. https://www.stat.cmu.edu/~cshalizi/350-2006/lecture-10.pdf"
-  Explanation
-  "Regression trees are a variant of decision trees that aim to
-  predict outcomes we consider real numbers — such as the optimal prescription
-  dosage, the cost of gas next year or the number of expected Covid cases this
-  winter. Regression trees divide the data into subsets, that is, branches,
-  nodes, and leaves. Like decision trees, regression trees select splits that
-  decrease the dispersion of target attribute values. Thus, the target attribute
-  values can be predicted from their mean values in the leaves."
-  '
+    paste('APA Citation from Bing AI',
+    '"Built In. (n.d.). Regression Trees: How to Get Started. Built In.
+    https://builtin.com/data-science/regression-tree"',
+    '"Carnegie Mellon University. (n.d.). Lecture 10: Regression Trees.
+    Carnegie Mellon University. https://www.stat.cmu.edu/~cshalizi/350-2006/lecture-10.pdf"',
+    'Explanation',
+    '"Regression trees are a variant of decision trees that aim to
+    predict outcomes we consider real numbers — such as the optimal prescription
+    dosage, the cost of gas next year or the number of expected Covid cases this
+    winter. Regression trees divide the data into subsets, that is, branches,
+    nodes, and leaves. Like decision trees, regression trees select splits that
+    decrease the dispersion of target attribute values. Thus, the target attribute
+    values can be predicted from their mean values in the leaves."
+    ', sep = "\n")
   })
   
   observeEvent(input$predict_button, {
@@ -321,45 +320,62 @@ server <- function(input, output) {
     }})
   
   output$map_comment <- renderText({
-    'Insert description'
+    'This is the map of the businesses that is in the data using different zip codes.'
   })
   
   output$busn_type_comment <- renderText({
-    'Insert description'
+    'We have different business types in our data. So we have sorted out business 
+    type and we counted how many business there are in each type. The highest business type 
+    is 4701- Hotels(EXC Casino Hotels) and Motels. They have total of around 235. 
+    The lowest in the 2060 Casino Hotels and 2302 Theater Co and Dinner Theater with
+    less than 10 in total.'
   })
   
   output$start_date_comment <- renderText({
-    'Insert description'
+    'We have a graph here that shows business types and when they were started.
+    In the x axis we have business start date from 1980 before till 2020 in the gap
+    of 20 years apart. As we know from The " COunt bu Business Type" that the hotels
+    and motels were the ones taht were started before anyone else and till 2020
+    its the highest that is being started. Bed and Breakfast INNS has also started 
+    being popular among the customers. As fpr 1980 till 2020, we can see vast differences.
+    Travelers accomodation started for only few years. Before 2000 it stoped its openings.'
   })
   
   output$major_players_comment <- renderText({
-    'Insert description'
+    'We did text analysis and found out top 5 business chain in this data. As we can see
+    that Sounder has the highest chain and hilton, holiday and hyatt has the similar 
+    amount of chain in New Orleans.'
   })
   
   output$zip_comment <- renderText({
-    'Insert description'
+    'This is the interactive graph where we can select years and see which zip code 
+    is famous among hotels and motels. We selected all the datas after 2000 till 2023 
+    to do this analysis. We can see that in 2000 70115 is the most popular and in 2023
+    70112 is the most popular.'
   })
   
   output$knn_model_comment <- renderText({
-    'Insert description'
+    'This model is using K-nearest neighbor to determine what business type the 
+    user inputed coordinates are most likely to be. You put in your coordinates,
+    and the models uses the closest businesses and determines the business type. 
+    The coordinates for New Orleans are approx. 29.9511, -90.0715, so the model
+    is most accurate if you input similar coordinates.'
   })
-
-
-#Mansi
-# ui <- fluidPage(
-#   titlePanel("Map of ZIP Codes"),
-#   
-#   sidebarLayout(
-#     sidebarPanel(
-#       # Place any sidebar inputs here, if needed
-#     ),
-#     
-#     mainPanel(
-#       leafletOutput("map")
-#     )
-#   )
-# )
-
+  
+  output$map2_comment <- renderText({
+    'The map displays thr zip code from the Zip column found in our dataset and
+    when we click on one of teh zip codes on the map, we can see the type of
+    business you can find in that area.'
+  })
+  
+  output$business_graph_comment <- renderText({
+    'It is a bar chart that displays the street name and the total number of
+    businessess in that street.For this specific chart,we had to seperate the
+    street name from the business address column and add a new column of the
+    street names. The y axis shows the total number of businessess and the x 
+    axis shows the street name.'
+  })
+  
 # Server function
   output$map2 <- renderLeaflet({
     leaflet() %>%
@@ -369,38 +385,6 @@ server <- function(input, output) {
       addMarkers(data = df, lng = ~longitude, lat = ~latitude, popup = ~BusinessType)
   })
 
-
-# Run the app
-
-
-
-# # UI function
-# ui <- fluidPage(
-#   titlePanel("Number of Businesses on Each Street"),
-#   
-#   sidebarLayout(
-#     sidebarPanel(
-#       # Street name selection
-#       selectInput("street_select", "Select Street Name", choices = unique(df$street_name)),
-#       
-#       # Place any additional sidebar inputs here, if needed
-#     ),
-#     
-#     mainPanel(
-#       plotOutput("business_graph")
-#     )
-#   )
-# )
-
-#Server function
-
-  # df$street_name <- sapply(str_split(df$BusinessAddress, "\\s"), function(x) {
-  #   if (length(x) >= 3) {
-  #     paste(x[2:(length(x) - 1)], collapse = " ")
-  #   } else {
-  #     ""
-  #   }
-  # })
   output$business_graph <- renderPlot({
     filtered_data <- subset(df, street_name == input$street_select)
     
@@ -416,8 +400,3 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
-
-
-
-
-
